@@ -1,0 +1,420 @@
+$dotVariant0: #ff01e2;
+$dotVariant1: #00ff11;
+$dotVariant2: #00d0ff;
+$dotVariant3: #FBFF00;
+$score-color: #626365;
+
+@mixin bubble($color0, $color1) {
+  background: $color1;
+  background: linear-gradient(180deg, $color0 0%, $color1 100%);
+}
+
+* {
+  font-family: 'Share Tech Mono', sans-serif;
+  box-sizing: border-box;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+html, body {
+  margin: 0;
+  font-size: 1em;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background-color: #000;
+  
+  @supports (-webkit-touch-callout: none) {
+    position: fixed;
+  }
+}
+
+.game {
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background-color: #ebecef;
+    background: repeating-linear-gradient(45deg,#f6f7f8,#f6f7f8 5px, #ebecef 5px,#ebecef 10px);
+  
+  &::before {
+    will-change: background-color;
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: #fff;
+    opacity: 0;
+  }
+  
+  &--on-score-0 {
+    &::before {
+      background-color: $dotVariant0;
+      animation: flash 250ms ease-out;
+    }
+    
+    .score {
+     animation: flash-color-0 250ms ease-out;
+    }
+  }
+  
+  &--on-score-1 {
+    &::before {
+      background-color: $dotVariant1;
+      animation: flash 250ms ease-out;
+    }
+    
+    .score {
+     animation: flash-color-1 250ms ease-out;
+    }
+  }
+  
+  &--on-score-2 {
+    &::before {
+      background-color: $dotVariant2;
+      animation: flash 250ms ease-out;
+    }
+    
+    .score {
+     animation: flash-color-2 250ms ease-out;
+    }
+  }
+  
+  &--on-score-3 {
+    &::before {
+      background-color: $dotVariant3;
+      animation: flash 250ms ease-out;
+    }
+    
+    .score {
+     animation: flash-color-3 250ms ease-out;
+    }
+    
+  }
+  
+  &--in-bonus {
+    .dot > .dot__graphic {
+      @include bubble(rgba(255, 255, 255, 0), rgba(255, 255, 255, 0));
+    }
+    
+    .bonus-message {
+      display: flex;
+      animation: bonus 1000ms linear forwards;
+    }
+  }
+    
+  &--paused .dots::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+}
+
+.bonus-message {
+  pointer-events: none;
+  z-index: 1;
+  position: absolute;
+  font-size: 48px;
+  line-height: 48px;
+  white-space: nowrap;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: none;
+  flex-wrap: no-wrap;
+  justify-content: center;
+  align-items: center;
+  text-shadow: 0 0 2px #fff, 0 10px 16px rgba(0, 0, 0, .5);
+}
+
+.controls {
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    background: linear-gradient(180deg, #fff 20%, #e6e7e8 80%, #fff 100%);
+    z-index: 1;
+    border-bottom: 1px solid #ccc;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, .2);
+    position: relative;
+}
+
+.controls__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    border-bottom: 1px solid rgba(0, 0, 0, .1);
+}
+
+.btn {
+    outline: none !important;
+    position: relative;
+    padding: 8px 16px;
+    font-size: 24px;
+    border-radius: 32px;
+    background-color: #e6e7e8;
+    background: linear-gradient(180deg, #c2c3c5 30%,  #e6e7e8 100%);
+    border: 1px solid #b2b3b5;
+    cursor: pointer;
+    color: #666;
+    font-weight: 500;
+    min-width: 100px;
+    box-shadow: 0px 1px 1px #fff;
+    transition: background-color .2s ease,transform .2s ease;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 1px;
+      right: 1px;
+      left: 1px;
+      border-radius: 30px;
+      height: 100%;
+      z-index: 0;
+      background: linear-gradient(170deg, rgba(255, 255, 255, .6) 0%,rgba(255, 255, 255, .3) 48%, rgba(255, 255, 255, .4) 50%, rgba(255, 255, 255, 0) 52%);
+  }
+  
+  > span {
+    position: relative;
+    z-index: 1;
+    text-shadow: 0px 1px 1px #fff;
+    user-select: none;
+  }
+}
+
+.score {
+    font-size: 45px;
+    line-height: 45px;
+    color: $score-color;
+    text-shadow: 0px 1px 1px #fff;
+}
+
+.slider-label {
+  margin-right: 8px;
+}
+
+.slider {
+  padding: 16px;
+  display: flex;
+  position: relative;
+  border-top: 1px solid #fff;
+  
+  input[type=range] {
+    -webkit-appearance: none;
+    width: 100%;
+    border-radius: 8px;
+  }
+  
+  input[type=range]:focus {
+    outline: none;
+  }
+  
+  input[type=range]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 16px;
+    cursor: pointer;
+    box-shadow: 0px 1px 1px #fff;
+    background: #B6B6B6;
+    background: linear-gradient(180deg, #626365 0%, #929395 100%);
+    border-radius: 25px;
+    border: 1px solid #b2b3b5;
+  }
+  
+  input[type=range]::-webkit-slider-thumb {
+    box-shadow: 1px 3px 6px rgba(0, 0, 0, .4);
+    border: 1px solid #b2b3b5;
+    height: 24px;
+    width: 36px;
+    border-radius: 32px;
+    background: #e6e7e8;
+    background: radial-gradient(ellipse at 40% 20%, #e2e3e5 0%, #d2d3d5 50%, #929395 180%);
+    cursor: pointer;
+    -webkit-appearance: none;
+    margin-top: -5px;
+    position: relative;
+    
+    
+  }
+}
+
+.dots {
+  flex-grow: 1;
+}
+
+.fps {
+    background-color: #333;
+    color: #fff;
+    position: fixed;
+    display: flex;
+    bottom: 8px;
+    right: 8px;
+    z-index: 10;
+}
+
+.dot {
+    will-change: transform;
+    position: absolute;
+    cursor: pointer;
+  
+  * {
+    pointer-events: none;
+  }
+  
+  &.popped {
+      pointer-events: none;
+    
+    * {
+      pointer-events: none;
+    }
+    
+    > .dot__graphic {
+        animation: pop 200ms ease-out forwards;
+    }
+  }
+  
+  &__graphic {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    position: relative;
+    box-shadow: 0 24px 6px -6px rgba(0, 0, 0, .1);
+    transition: transform 200ms ease;
+  
+    &:after {
+        content: '';
+        position: absolute;
+        top: 4px;
+        left: 15%;
+        border-radius: 50%;
+        width: 70%;
+        height: 50%;
+        background: linear-gradient(180deg, rgba(255, 255, 255,.5) 0%, rgba(255, 255, 255, 0) 100%);
+    }
+  }
+  
+  &--0 {
+    > .dot__graphic {
+      @include bubble(#a80095, $dotVariant0);
+    }
+  }
+  
+  &--1 {
+    > .dot__graphic {
+      @include bubble(#00a80b, $dotVariant1);
+    }
+  }
+  
+  &--2 {
+    > .dot__graphic {
+      @include bubble(#0890ab, $dotVariant2);
+    }
+  }
+  
+  &--bonus {
+    > .dot__graphic {
+      @include bubble(#A5A800, $dotVariant3);
+    }
+  }
+}
+
+@media (hover: hover) {
+    .dot:hover > .dot__graphic {
+        transform: scale(1.25);
+    }
+}
+
+@keyframes pop {
+    0% {
+        -webkit-transform: scale(1);
+        opacity: 1;
+    }
+
+
+    100% {
+        -webkit-transform: scale(2);
+        opacity: 0;
+    }
+}
+
+@keyframes flash {
+    0% {
+        opacity: .8;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes bonus {
+    0% {
+        opacity: 0;
+        transform: scale(0.5)
+    }
+  
+    25% {
+        opacity: 1;
+        transform: scale(.625)
+    }
+  
+    75% {
+        opacity: 1;
+        transform: scale(.875)
+    }
+  
+    100% {
+        opacity: 0;
+        transform: scale(1)
+    }
+}
+
+@keyframes flash-color-0 {
+  0% {
+    color: $dotVariant0;
+  }
+  
+  100% {
+    color: $score-color;
+  }
+}
+
+@keyframes flash-color-1 {
+  0% {
+    color: $dotVariant1;
+  }
+  
+  100% {
+    color: $score-color;
+  }
+}
+
+@keyframes flash-color-2 {
+  0% {
+    color: $dotVariant2;
+  }
+  
+  100% {
+    color: $score-color;
+  }
+}
+
+@keyframes flash-color-3 {
+  0% {
+    color: $dotVariant3;
+  }
+  
+  100% {
+    color: $score-color;
+  }
+}
